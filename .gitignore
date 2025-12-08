@@ -1,0 +1,26 @@
+# Python / env
+venv/
+__pycache__/
+*.pyc
+
+# Data folders to ignore
+data/frames/
+data/raw/
+
+# Common large media
+*.mp4
+*.mov
+*.avi
+*.png
+*.jpg
+*.jpeg
+
+# Model/checkpoint files
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.zip
+*.db
+# Keep colmap output folder (but exclude DB explicitly if desired)
+# data/colmap_output/database.db  # we will NOT add the DB
