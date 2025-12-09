@@ -196,5 +196,139 @@ This is normal because COLMAP only reconstructs distinctive feature points and d
 
 ---
 
-## 7. Get GPU prowess first
+## 7. Image Undistortion
 
+After finishing the sparse reconstruction, we needed to undistort the frames because Gaussian Splatting only supports PINHOLE or SIMPLE_PINHOLE intrinsics.
+COLMAP’s default SfM uses more complex models (e.g., OPENCV), so we fixed this locally.
+
+We ran the COLMAP undistorter on our machine:
+
+```bash
+colmap image_undistorter \
+    --image_path data/frames/test \
+    --input_path data/colmap_output/sparse/0 \
+    --output_path scene_gs \
+    --output_type COLMAP
+```
+This created a new folder scene_gs/ with:
+```python
+scene_gs/
+│── images/          (undistorted images)
+│── sparse/
+│     ├── cameras.bin
+│     ├── images.bin
+│     └── points3D.bin
+```
+
+### Converting COLMAP Binary Files (.bin → .txt)
+Gaussian Splatting does not read .bin files, so we converted everything to text format and saved it to 0 folder in sparse.
+```bash
+colmap model_converter \
+    --input_path scene_gs/sparse \
+    --output_path scene_gs/sparse/0 \
+    --output_type TXT
+```
+Final dataset structure:
+```bash
+scene_gs/
+│── images/
+│── sparse/
+│     └── 0/
+│          ├── cameras.txt
+│          ├── images.txt
+│          └── points3D.txt
+```
+
+## 8. Training on the GPU Server (University Cluster)
+Since our local machine (Mac M2) cannot train Gaussian Splatting models, we moved the final training pipeline to the university GPU server. Below is everything we did to get training running there.
+
+### A. Connect to the server
+After connecting to the university VPN, we accessed the GPU VM using VS Code Remote. The project workspace on the server is located at /workspace/.
+Inside this directory, we keep:
+
+-the official gaussian-splatting repository
+
+-our own gaussian_project folder (dataset + outputs)
+
+### B. Clone the official Gaussian Splatting repository
+We cloned the upstream repository as we were not able to use the CLI commands for covert,train and render also because it contains:
+
+-the training script (train.py)
+
+-the renderer
+
+-the COLMAP scene loader
+
+-CUDA-based acceleration modules needed for real-time GS
+
+```bash
+cd /workspace
+git clone https://github.com/graphdeco-inria/gaussian-splatting.git
+```
+This will give us full-training framework.
+
+### C. Uploaded our prepared dataset (scene_gs) to the server
+We first prepared the dataset locally (undistortion + bin→txt conversion) and then uploaded the entire folder to ""/workspace/gaussian_project/scene_gs""
+Final dataset structure on the server:
+```bash
+scene_gs/
+ ├── images/               # undistorted frames
+ ├── sparse/
+ │     └── 0/
+ │         ├── cameras.txt
+ │         ├── images.txt
+ │         ├── points3D.txt
+ └── (other COLMAP files)
+```
+This is exactly the format expected by the Gaussian Splatting training pipeline.
+
+### D. Build the CUDA extensions required for Gaussian Splatting
+The training code depends on three custom CUDA modules:
+
+-diff-gaussian-rasterization
+
+-simple-knn
+
+-fused-ssim
+
+These cannot be installed via pip; they must be compiled against the server’s CUDA + PyTorch setup.
+
+For each module:
+```bash
+cd gaussian-splatting/submodules/<module-name>
+/home/student/venv/bin/python setup.py build_ext --inplace
+```
+We repeated this for all three of them.
+
+### E. Install missing Python packages inside the server's venv
+The server had already preinstalled:
+
+a) CUDA-enabled PyTorch
+
+b) the venv (/home/student/venv)
+
+c) GPU drivers
+
+So we only needed to add these missing small packages: 
+```bash
+/home/student/venv/bin/pip install tqdm plyfile opencv-python joblib
+```
+
+### F. Run the Gaussian Splatting training
+Once the dataset and CUDA modules were ready, we launched training:
+```bash
+cd /workspace/gaussian-splatting
+/home/student/venv/bin/python train.py \
+    -s /workspace/gaussian_project/scene_gs \
+    -m /workspace/gaussian_project/output_model \
+    --iterations 2000
+```
+This:
+
+-loads the COLMAP scene
+
+-initializes 3D Gaussians
+
+-optimizes them for 2000 iterations
+
+-stores outputs under "/workspace/gaussian_project/output_model/"
