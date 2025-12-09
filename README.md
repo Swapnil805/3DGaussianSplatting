@@ -332,3 +332,56 @@ This:
 -optimizes them for 15000 iterations
 
 -stores outputs under "/workspace/gaussian_project/output_model/"
+
+Inside this folder, the renderer also creates two subfolders:
+```bash
+output_model/train/
+output_model/test/
+```
+Each subfolder contains a directory named ours_15000, which holds the rendered frames generated from the trained model.
+
+## 9. Rendering Final Images Using the Trained Model
+After training finished, we used render.py to generate the 2D renderings from the optimized 3D Gaussians.
+To render the training split:
+```bash
+/home/student/venv/bin/python render.py \
+    -m /workspace/gaussian_project/output_model \
+    -s /workspace/gaussian_project/scene_gs \
+    --train
+```
+This produced the final RGB images at:
+```swift
+/workspace/gaussian_project/output_model/train/ours_15000/renders/
+```
+These are the frames that we later assembled into a video.
+
+## 10. Converting Rendered Frames into a Video
+The frames produced by Gaussian Splatting are simply PNG images.
+We used FFmpeg to turn them into an MP4 video.
+
+Important: some images had odd dimensions, which FFmpeg does not accept for H.264 encoding, so we padded the height by 1 pixel.
+
+From inside the directory containing the PNG files:
+```bash
+ffmpeg -framerate 30 -pattern_type glob -i "*.png" \
+    -vf "pad=width=iw:height=ih+1" \
+    -c:v libx264 -pix_fmt yuv420p output_15000.mp4
+```
+This produced our final rendered video **output_15000.mp4**. The generated PNG frames (and the resulting MP4 video) are not just the original video.
+Instead, they represent:
+
+-A re-rendering of the scene
+
+-Using only the learned 3D Gaussians
+
+-From the same camera poses that COLMAP estimated
+
+-After 15,000 iterations of optimization
+
+This verifies that:
+
+-The pipeline successfully reconstructed the scene in 3D
+
+-The Gaussian model can render synthetic views that match the input images
+
+-The system achieves the Minimum Goal and part of the Desired Goal
