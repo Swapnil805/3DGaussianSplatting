@@ -321,7 +321,7 @@ cd /workspace/gaussian-splatting
 /home/student/venv/bin/python train.py \
     -s /workspace/gaussian_project/scene_gs \
     -m /workspace/gaussian_project/output_model \
-    --iterations 2000
+    --iterations 15000
 ```
 This:
 
@@ -329,6 +329,6 @@ This:
 
 -initializes 3D Gaussians
 
--optimizes them for 2000 iterations
+-optimizes them for 15000 iterations
 
 -stores outputs under "/workspace/gaussian_project/output_model/"
