@@ -429,16 +429,22 @@ We used these 2 type camera path for rendering:
 In orbit rendering, the camera:
 
 -moves on a circular path around the scene center
+
 -keeps looking toward the center of the scene
+
 -maintains fixed intrinsics
+
 This produced a smooth 360° rotation around the scene and in the video conceptually, radius is fixed, angle changes uniformly & height remains constant.
 
 ### B. Spiral Camera Path
 In spiral rendering, the camera:
 
 -rotates around the scene (like orbit)
+
 -changes radius over time
+
 -changes height over time
+
 This produced a helical or spiral motion that moves closer/farther from the scene, moves slightly up/down & continuously changes viewpoint.
 
 ## 13. Why Orbit & Spiral Videos Look Different from Training Renders
@@ -448,12 +454,16 @@ Instead, they confirm that the model is performing novel view synthesis, which w
 
 ### Training Renders
 -Use camera poses from the original dataset
+
 -Are directly optimized during training
+
 -Typically appear sharper and more detailed
 
 ### Orbit and Spiral Renders
 -Use new, unseen camera poses
+
 -Require interpolation between learned Gaussians
+
 -May reveal softer details or minor artifacts
 
 ## 14. Final Verdict
