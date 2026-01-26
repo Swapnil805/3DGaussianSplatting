@@ -95,7 +95,7 @@ GaussianSplatting_Project/
 
 ## 2. Collecting dataset and frame extraction
 
-We have used a short video of a well-lighted room setting as our initial testing dataset(if we get our desired result, we are planning to use a better video with higher fps) We used Iphone with 30fps to shoot the video and put it in our data>>raw>> folder to further extract frames from it.
+We have used a short video of a well-lighted outside setting near as our initial testing dataset(if we get our desired result, we are planning to use a better video with higher fps) We used Iphone with 30fps to shoot the video and put it in our data>>raw>> folder to further extract frames from it.
 
 ### Frame Extraction:
 We are using cv2 library to extract frames from our video. For now the extraction rate is 5 frames per second (changeable as per requirement).
@@ -385,3 +385,78 @@ This verifies that:
 -The Gaussian model can render synthetic views that match the input images
 
 -The system achieves the Minimum Goal and part of the Desired Goal
+
+## 11. Rerun everything on better dataset with more training iterations
+After we verified that the training and rendering are working as expected. We introduced our new data set which is a video taken near our campus's library in high resolution and re-ran the whole pipeline till rendering.
+And we tested the training on different number of iterations and placed checkpoints on 7000, 10000, 15000, 40000 iterations. We observed that after the 40k iterations the progress got stagnant hence we stopped training the model on 40k. 
+The point cloud of splats we got was better in resolution than the last one.
+
+After that we created the video from rendered images just like before, this shows that the scene got reconstructed well. Although the video which was generated was not very aesthetically pleasing because of the different intrinsics of mobile phone camera and colmap, but we can see that the gaussian splatting training worked well.
+To visualize the 3d scene better we chose Novel View Synthesis (Orbit & Spiral Rendering).
+
+##12. Novel View Synthesis (Orbit & Spiral Rendering)
+After verifying that the trained Gaussian model could correctly re-render the training camera views, we extended the pipeline to demonstrate novel view synthesis.
+
+Novel view synthesis means rendering the learned 3D scene from camera viewpoints that were never present in the original dataset. This is one of the core promises of radiance-field methods like Gaussian Splatting.
+
+Instead of using COLMAP’s real camera poses, we generate synthetic camera trajectories programmatically and render the scene from those viewpoints.
+
+This step moves the project beyond simple reconstruction and shows that the model has learned a continuous 3D representation of the scene.
+We created two new python scripts within the official gaussian-splatting repo - "render_orbit.py","render_spiral.py" which :
+-loaded the trained Gaussian model from
+/workspace/gaussian_project/output_model/
+
+-reused the trained 3D Gaussians without retraining
+
+-replaced COLMAP camera poses with synthetic camera poses
+
+-rendered one PNG frame per synthetic viewpoint
+The rendered frames were written to:
+```bash
+/workspace/gaussian_project/results/novel_orbit/
+(workspace/gaussian_project/results/novel_spiral/)
+```
+Each folder contains:
+
+orbit_0000.png ... orbit_0239.png
+or
+
+spiral_0000.png ... spiral_0239.png
+
+These frames were then converted into MP4 videos using FFmpeg, exactly like the training renders.
+We used these 2 type camera path for rendering:
+###A. Orbit Camera Path
+In orbit rendering, the camera:
+
+-moves on a circular path around the scene center
+-keeps looking toward the center of the scene
+-maintains fixed intrinsics
+This produced a smooth 360° rotation around the scene and in the video conceptually, radius is fixed, angle changes uniformly & height remains constant.
+
+###B. Spiral Camera Path
+In spiral rendering, the camera:
+
+-rotates around the scene (like orbit)
+-changes radius over time
+-changes height over time
+This produced a helical or spiral motion that moves closer/farther from the scene, moves slightly up/down & continuously changes viewpoint.
+
+##13. Why Orbit & Spiral Videos Look Different from Training Renders
+It is normal for orbit and spiral renders to look slightly different from training renders.
+These differences do not indicate a failure of the model.
+Instead, they confirm that the model is performing novel view synthesis, which was our intended goal.
+
+###Training Renders
+-Use camera poses from the original dataset
+-Are directly optimized during training
+-Typically appear sharper and more detailed
+
+###Orbit and Spiral Renders
+-Use new, unseen camera poses
+-Require interpolation between learned Gaussians
+-May reveal softer details or minor artifacts
+
+##14. Final Verdict
+The primary goal of this project was to achieve novel view synthesis using a 3D Gaussian Splatting pipeline, and this goal was successfully accomplished. Starting from a raw phone video, we processed the data through frame extraction and Structure-from-Motion to obtain camera poses and scene geometry. Using this information, we trained a Gaussian-based representation capable of rendering stable and realistic novel views. Orbit and spiral camera paths were used to evaluate the reconstruction, and the resulting renders showed consistent geometry, smooth parallax, and visually coherent views from unseen camera positions. This confirms that the model learned a meaningful 3D structure rather than simply reproducing the training images.
+
+We also visualized the reconstructed scene in Unity and added basic user controls. Features like camera orbit and zoom made it easy to explore the orbit and spiral views. Although Unity was not the main focus, it provided a useful way to view the results of the novel view synthesis pipeline. In summary, the project met its main goal, and the interactive features show promise for real-time use and future improvements.
