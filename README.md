@@ -1,4 +1,4 @@
-# 3DGaussianSplatting : Create a 3D Gaussian Splatting scene of a scene
+# 3DGaussianSplatting : Create a 3D Gaussian Splatting of a scene
 
 ## 🎯 Project Overview
 In this project, we are implementing a **visual computing pipeline** to reconstruct a 3D scene from a multi-view image sequence using **3D Gaussian Splatting**.
@@ -47,7 +47,7 @@ This project demonstrates applied understanding of **computer vision, 3D geometr
 
 # 📂 Environment Setup & Pipeline Steps
 
-Below is the exact pipeline followed by us to reach the interim goal of our project
+Below is the exact pipeline followed by us to reach the goal of our project
 
 ---
 
