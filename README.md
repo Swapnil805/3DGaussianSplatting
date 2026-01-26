@@ -1,6 +1,6 @@
 # 3DGaussianSplatting : Create a 3D Gaussian Splatting of a scene
 
-## 🎯 Project Overview
+## Project Overview
 In this project, we are implementing a **visual computing pipeline** to reconstruct a 3D scene from a multi-view image sequence using **3D Gaussian Splatting**.
 
 The system will transform 2D image frames into a **real-time renderable radiance field**, enabling smooth, interactive viewpoint navigation.
@@ -24,7 +24,7 @@ This work follows the method introduced in:  (base research paper)
 
 ---
 
-## 🚀 Project Layers
+## Project Layers
 
 To de-risk development we split the work into five incremental layers:
 
@@ -45,7 +45,7 @@ This project demonstrates applied understanding of **computer vision, 3D geometr
 
 ---
 
-# 📂 Environment Setup & Pipeline Steps
+# Environment Setup & Pipeline Steps
 
 Below is the exact pipeline followed by us to reach the goal of our project
 
