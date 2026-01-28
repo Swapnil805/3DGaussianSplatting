@@ -321,7 +321,7 @@ cd /workspace/gaussian-splatting
 /home/student/venv/bin/python train.py \
     -s /workspace/gaussian_project/scene_gs \
     -m /workspace/gaussian_project/output_model \
-    --iterations 15000
+    --iterations 40000
 ```
 This:
 
