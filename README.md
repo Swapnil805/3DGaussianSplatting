@@ -475,78 +475,78 @@ We also visualized the reconstructed scene in Unity and added basic user control
 
 To better explore and present the reconstructed 3D scene, we integrated a Unity-based interactive viewer. Unity is not used for training Gaussians—it is purely for visualization and interaction. This viewer allows you to:
 
-Load exported reconstruction assets (meshes or point clouds).
+• Load exported reconstruction assets (meshes or point clouds).
 
-Provide an interactive scene (Main.unity) with navigation controls (FlyCamera.cs).
+• Provide an interactive scene (Main.unity) with navigation controls (FlyCamera.cs).
 
-Showcase a clean demo for presentations, enabling smooth camera movement and scene inspection.
+• Showcase a clean demo for presentations, enabling smooth camera movement and scene inspection.
 
-Repository Structure
+### Repository Structure
 
 At a minimum, the Unity project includes:
 
-Assets/ – Scenes, scripts, models, and all Unity .meta files.
+• Assets/ – Scenes, scripts, models, and all Unity .meta files.
 
-Packages/ – Package manifest and dependency management.
+• Packages/ – Package manifest and dependency management.
 
-ProjectSettings/ – Unity project configuration files.
+• ProjectSettings/ – Unity project configuration files.
 
 Important: Do not delete .meta files. Unity relies on them to maintain references between assets.
 
-Exporting Assets from the Pipeline
+### Exporting Assets from the Pipeline
 
 The Gaussian Splatting pipeline typically produces:
 
-A point cloud (.ply).
+• A point cloud (.ply).
 
-Orbit or spiral videos (.mp4) rendered by the pipeline scripts.
+• Orbit or spiral videos (.mp4) rendered by the pipeline scripts.
 
-Recommended Format for Unity:
+### Recommended Format for Unity:
 
-Unity does not reliably handle .ply files. Convert them externally to .obj or .fbx before importing.
+• Unity does not reliably handle .ply files. Convert them externally to .obj or .fbx before importing.
 
-Alternatively, a point cloud importer plugin can be used if you want to keep .ply.
+• Alternatively, a point cloud importer plugin can be used if you want to keep .ply.
 
-For this project, .obj is recommended for smoother workflow.
+• For this project, .obj is recommended for smoother workflow.
 
-Setting Up the Unity Project
+### Setting Up the Unity Project
 
-Open Unity Hub.
+1. Open Unity Hub.
 
-Add the project from disk.
+2. Add the project from disk.
 
-Importing Reconstructions into Unity
+### Importing Reconstructions into Unity
 
-With a Gaussian Splatting plugin: create a new Gaussian Splatting object from the imported file.
+• With a Gaussian Splatting plugin: create a new Gaussian Splatting object from the imported file.
 
-Without a plugin: import the converted .obj / .fbx as a mesh.
+• Without a plugin: import the converted .obj / .fbx as a mesh.
 
 Note: .ply files require either a point cloud importer or external conversion to .obj / .fbx.
 
-Building the Scene (Main.unity)
+### Building the Scene (Main.unity)
 
-Create an empty GameObject called SceneRoot.
+1. Create an empty GameObject called SceneRoot.
 
-Add your imported mesh or asset as a child of SceneRoot.
+2. Add your imported mesh or asset as a child of SceneRoot.
 
-Keep the object near (0,0,0) so camera navigation feels natural.
+3. Keep the object near (0,0,0) so camera navigation feels natural.
 
-Camera Controls (FlyCamera.cs)
+### Camera Controls (FlyCamera.cs)
 
-Select the Main Camera.
+1. Select the Main Camera.
 
-Add the FlyCamera.cs component.
+2. Add the FlyCamera.cs component.
 
-Press Play to start interacting.
+3. Press Play to start interacting.
 
-Default Controls:
+### Default Controls:
 
-W / A / S / D → Move forward / left / back / right
+• W / A / S / D → Move forward / left / back / right
 
-Mouse → Look around
+• Mouse → Look around
 
-Shift → Move faster
+• Shift → Move faster
 
-Q / E → Move up / down
+• Q / E → Move up / down
 
 The script can be customized to adjust controls according to your preference.
