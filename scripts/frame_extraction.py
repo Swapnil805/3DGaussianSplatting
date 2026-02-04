@@ -1,13 +1,11 @@
 import os
 import cv2
 
-# Set input video and output folder
 video_path = "../data/raw/test.mp4"
 output_dir = "../data/frames/test"
 
 os.makedirs(output_dir, exist_ok=True)
 
-# Extract 5 frames per second
 fps = 5
 vidcap = cv2.VideoCapture(video_path)
 frame_rate = vidcap.get(cv2.CAP_PROP_FPS)
