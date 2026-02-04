@@ -1,7 +1,6 @@
 import open3d as o3d
 import os
 
-# path to your exported point cloud
 ply_path = "../data/colmap_output/sparse/0/points3D.ply"
 
 if not os.path.exists(ply_path):
