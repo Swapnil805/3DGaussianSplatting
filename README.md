@@ -550,3 +550,12 @@ Note: .ply files require either a point cloud importer or external conversion to
 • Q / E → Move up / down
 
 The script can be customized to adjust controls according to your preference.
+
+## 16. AI Usage Disclaimer
+
+We used AI tools such as ChatGPT as supportive references throughout the project. 
+They helped us understand new concepts, compare technical approaches (for example novel view synthesis vs Gsplat port forwarding visualization), and get familiar with tools like Unity for visualization. 
+At times, we also used them for general debugging advice and explanations.
+
+However, the project’s design, implementation, and evaluation were carried out independently by us, and all final code and decisions reflect our own work.
+
