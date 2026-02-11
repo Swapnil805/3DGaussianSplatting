@@ -24,10 +24,10 @@ for img_name in tqdm(images, desc="Scanning frames"):
 
 scores = np.array(scores)
 median_score = np.median(scores)
-THRESHOLD = max(5, 0.3 * median_score)  # more lenient baseline
+THRESHOLD = max(5, 0.3 * median_score)  # more lenient baseline as old one was not properly filtering out
 
-print(f"\n📊 Median sharpness: {median_score:.2f}")
-print(f"🧠 Using adaptive threshold: {THRESHOLD:.2f}")
+print(f"\n Median sharpness: {median_score:.2f}")
+print(f" Using adaptive threshold: {THRESHOLD:.2f}")
 
 kept, removed = 0, 0
 for img_name, score in zip(images, scores):
@@ -38,4 +38,4 @@ for img_name, score in zip(images, scores):
     else:
         kept += 1
 
-print(f"\n✅ Done! Kept {kept} sharp frames, moved {removed} blurry ones → {output_folder}")
+print(f"\n Done! Kept {kept} sharp frames, moved {removed} blurry ones → {output_folder}")
